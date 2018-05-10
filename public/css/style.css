@@ -1,0 +1,91 @@
+body {
+  font-family: 'Abel';
+  color:red;
+}
+
+/*dropdown*/
+
+.dropbtn {
+    background-color: #3498DB;
+    color: white;
+    padding: 4px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+    background-color: #3498DB;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    min-width: 16px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown a:hover {background-color: #ddd}
+
+.show {display:block;}
+
+/*columns for Settings*/
+
+.column {
+  float:left;
+  width:85%;
+}
+
+.column-notification {
+  float:left;
+  width:75%;
+}
+
+.column-right {
+ float: right;
+ width:25%;
+}
+
+.row:after {
+  content:"";
+  display: table;
+  clear: both;
+}
+
+.row {
+  margin:1%;
+}
+
+#whitelistURL {
+  width:90%;
+}
+
+#whitelist-add-url {
+  font-style:italic;
+  width:40%;
+}
+
+.add-button {
+  float:left;
+  width:10%;
+  padding-top:5px;
+}
+
+select {
+  font-weight:bold;
+}

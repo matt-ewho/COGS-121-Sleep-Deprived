@@ -1,0 +1,19 @@
+{
+  "name": "COGS-121-Sleep-Deprived",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^4.1.0",
+    "bootstrap-select": "^1.13.1",
+    "express": "^4.16.3",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.3",
+    "sqlite3": "^4.0.0"
+  }
+}
