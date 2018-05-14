@@ -1,19 +1,159 @@
 <!DOCTYPE html>
+<!-- HOMEPAGE -->
 <html>
-  <head>
-    <style>
-      button {
-        height: 30px;
-        width: 30px;
-        outline: none;
-        margin: 10px;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="buttonDiv">
+<!-- CSS -->
+<link rel="stylesheet" href="bootstrap.css" rel="stylesheet">
+<link rel="stylesheet" href="bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="bootstrap-theme.css" rel="stylesheet">
+<link rel="stylesheet" href="bootstrap-theme.min.css" rel="stylesheet">
+  <link rel="stylesheet" ref="text/css" href="style.css">
+
+<link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet">
+<head>
+
+<title>Settings</title>
+
+
+<style>
+
+</style>
+</head>
+<!-- BODY -->
+
+<body>
+  <div class="container">
+    <center><h1>Settings</h1><br>
+    </center>
+<div class="panel panel-default">
+  <div class="panel-heading"><b>Whitelist</b><br>
+    <small>The whitelist includes websites that are considered "work" sites.</small>
+  </div>
+
+  <div class="panel-body">
+
+    <table class="table">
+      <tbody>
+        <tr>
+          <td>https://www.tritoned.ucsd.edu/</td>
+          <td><button>x</button></td>
+        </tr>
+    <tr>
+      <td>https://www.wikipedia.org/</td>
+      <td><button>x</button></td>
+    </tr>
+    <tr>
+      <td>https://google.scholar.com/</td>
+      <td><button>x</button></td>
+    </tr>
+  </tbody>
+    </table>
+
+
+
+<br>
+Add another...
+<div class="row">
+  <div class="column">
+    <input type="text" class="form-control" id="whitelist-add-url" placeholder="enter another url">
+  </div>
+
+  <div class="add-button">
+    <button>Add</button>
+  </div>
+</div>
+<br>
+
+<center>
+  <button>Delete All</button>
+  <button>Reset</button>
+  <button>Save</button></center>
+<!-- END PANEL -->
+</div>
+</div>
+
+<!-- INTERVAL PANEL -->
+
+<div class="panel panel-default">
+  <div class="panel-heading"><b>Work Interval</b><br>
+  <small>The work interval is the amount of time that your website usage is tracked for your progress bar.</small></div>
+  <div class="panel-body">
+
+    Current work interval is set to
+
+    <!-- <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref"> -->
+    <select class="selectpicker">
+        <option>1 hour (default)</option>
+        <option>2 hours</option>
+        <option>3 hours</option>
+        <option>6 hours</option>
+        <option>12 hours</option>
+        <option>24 hours</option>
+    </select>
+
+    <br><br>
+    <b><font color="black">Warning:</font></b> Changing your current tracking interval will reset your progress bar to 50/50.
+
+    <br><br>
+
+    <center>
+      <button>Reset</button>
+      <button>Save</button>
+  </div>
+</div>
+
+
+<!-- NOTIFICATIONS PANEL -->
+
+<div class="panel panel-default">
+  <div class="panel-heading"><b>Notifications</b><br>
+  <small></small></div>
+<div class="panel-body">
+
+  <div class="row">
+    <div class="column-notification">
+      Notify me when PLAY exceeds 50%
     </div>
-    Options!!!!!!!!
-  </body>
+    <div class="column-right">
+          <label class="radio-inline"><input type="radio" name="play-notification" checked>On</label>
+          <label class="radio-inline"><input type="radio" name="play-notification">Off</label>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="column-notification">
+      Notify me when a work interval has passed
+    </div>
+    <div class="column-right">
+          <label class="radio-inline"><input type="radio" name="interval-notification" checked>On</label>
+          <label class="radio-inline"><input type="radio" name="interval-notification">Off</label>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- SAVE PANEL -->
+
+<div class="panel panel-default">
+  <div class="panel-body">
+  <center><button>Reset</button>
+    <button>Default</button>
+  <button onclick="optionSaved()">Save Changes</button></div>
+</div>
+
+<!-- test button for changing text & printing to console in browser -->
+<button id="testbutton"> test button </button>
+<div id="testbox">text will change here</div>
+
+<!-- alert box for testing javacsript alerts & jquery in javascript file -->
+<button id="alertbutton">alert</button>
+
+    </div>
+
+</body>
+
+<!-- JAVASCRIPT -->
   <script src="options.js"></script>
+  <script src="jquery-3.3.1.min.js"></script>
+
 </html>
