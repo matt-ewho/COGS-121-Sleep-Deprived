@@ -61,10 +61,19 @@ Add another...
   </div>
 
   <div class="add-button">
-    <button>Add</button>
+    <button onclick="addWhiteSite()">Add</button>
   </div>
 </div>
 <br>
+
+<script>
+
+function addWhiteSite() {
+  const addedSite = document.getElementById("whitelist-add-url").value;
+  console.log(addedSite);
+    alert(addedSite+ " saved into database!");
+}
+</script>
 
 <center>
   <button>Delete All</button>
