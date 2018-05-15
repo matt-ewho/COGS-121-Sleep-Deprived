@@ -3,6 +3,27 @@ body {
   /*color:red; for debugging */
 }
 
+.progress {
+  float:left;
+  margin-bottom:0;
+  width:85%;
+}
+
+#settings-icon {
+  position:absolute;
+  top:57px;
+  margin-left:85%;
+  opacity:0.6;
+  transition: opacity .1s ease-in;
+-moz-transition: opacity .1s ease-in;
+-webkit-transition: opacity .1s ease-in;
+-o-transition: opacity .1s ease-in;
+}
+
+#settings-icon:hover {
+  opacity:.9;
+}
+
 /*dropdown*/
 
 .dropbtn {

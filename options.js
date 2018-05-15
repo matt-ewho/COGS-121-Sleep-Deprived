@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function(event) {
+  const optionsURL = window.location.href;
   console.log("ready!");
+  console.log(optionsURL);
 });
 
 document.getElementById("testbutton").onclick=function() {
@@ -9,6 +11,27 @@ document.getElementById("testbutton").onclick=function() {
 
 document.getElementById("alertbutton").onclick=function() {
   alert('alert button works heck yes');
+};
+
+/*RESET alerts*/
+
+document.getElementById("deleteWhitelist").onclick=function() {
+  if (confirm("Are you sure you wish to delete all of your whitelisted websites?")) {
+    alert("Whitelisted websites have been deleted.");
+  }
+};
+
+/*SAVE CHANGES alerts*/
+document.getElementById("saveWhitelist").onclick=function() {
+  alert("Whitelist changes have been saved successfully.");
+};
+
+document.getElementById("saveInterval").onclick=function () {
+  alert("Work Interval settings have been saved successfully.");
+};
+
+document.getElementById("saveAll").onclick=function () {
+  alert("All settings have been saved successfully.");
 };
 
 /*
