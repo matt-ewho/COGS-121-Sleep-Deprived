@@ -1,4 +1,15 @@
-let changeColor = document.getElementById('changeColor');
+document.addEventListener("DOMContentLoaded", function(event) {
+  console.log("pop-up loaded");
+
+  chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+    var url = tabs[0].url;
+    console.log("current page url: " + url);
+  const test = new URL(url);
+console.log(test.hostname); // "www.example.com"
+  });
+});
+
+/*let changeColor = document.getElementById('changeColor');
 
 chrome.storage.sync.get('color', function(data) {
   changeColor.style.backgroundColor = data.color;
@@ -12,4 +23,4 @@ changeColor.onclick = function(element) {
         tabs[0].id,
         {code: 'document.body.style.backgroundColor = "' + color + '";'});
   });
-};
+};*/
