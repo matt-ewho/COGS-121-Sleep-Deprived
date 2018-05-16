@@ -6,10 +6,12 @@
 <link rel="stylesheet" href="bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="bootstrap-theme.css" rel="stylesheet">
 <link rel="stylesheet" href="bootstrap-theme.min.css" rel="stylesheet">
-  <link rel="stylesheet" ref="text/css" href="style.css">
+<link rel="stylesheet" ref="text/css" href="style.css">
+
 
 <link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet">
 <head>
+
 
 <title>Settings</title>
 
@@ -58,7 +60,7 @@ Add another...
   </div>
 
   <div class="add-button">
-    <button>Add</button>
+    <button id="addWhitelist">Add</button>
   </div>
 </div>
 <br>
@@ -81,7 +83,7 @@ Add another...
     Current work interval is set to
 
     <!-- <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref"> -->
-    <select class="selectpicker">
+    <select class="selectpicker" id="intervalSelect">
         <option>1 hour (default)</option>
         <option>2 hours</option>
         <option>3 hours</option>
