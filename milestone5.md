@@ -1,7 +1,12 @@
 # Milestone 5
 ## Screenshots
+<img src="https://raw.githubusercontent.com/matt-ewho/COGS-121-Sleep-Deprived/master/images/M4S1.png">
+<img src="https://raw.githubusercontent.com/matt-ewho/COGS-121-Sleep-Deprived/master/images/M5S1.png">
 
 We have replaced our index.html page, and created a chrome extention with a pop-up in its place. 
+
+<img src="https://raw.githubusercontent.com/matt-ewho/COGS-121-Sleep-Deprived/master/images/M4S2.png">
+<img src="https://raw.githubusercontent.com/matt-ewho/COGS-121-Sleep-Deprived/master/images/M5S2.png">
 
 In addition, we changed some of the aesthetics of our settings page, primarily the red color. The major change to our settings page is that it is now accessed through the "options" when clicking on our extention icon. 
 
