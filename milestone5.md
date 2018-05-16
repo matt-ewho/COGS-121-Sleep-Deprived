@@ -7,6 +7,8 @@ We have replaced our index.html page, and created a chrome extention with a pop-
 
 <img src="https://raw.githubusercontent.com/matt-ewho/COGS-121-Sleep-Deprived/master/images/M5S3.PNG">
 
+As shown above, our previous design only led to the settings page through the "settings" button on the index page. 
+
 <img src="https://raw.githubusercontent.com/matt-ewho/COGS-121-Sleep-Deprived/master/images/M5S4.PNG">
 <img src="https://raw.githubusercontent.com/matt-ewho/COGS-121-Sleep-Deprived/master/images/M5S2.PNG">
 
