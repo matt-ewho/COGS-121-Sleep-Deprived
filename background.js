@@ -11,6 +11,9 @@ chrome.runtime.onInstalled.addListener(function() {
    });
  });
 
+ /**********************************************************************************
+                                   TIMESTAMP FUNCTIONS
+ ***********************************************************************************/
 
 /**
  * Return a timestamp with the format "m/d/yy h:MM:ss TT"
@@ -44,16 +47,6 @@ function timeStamp() {
   return time.join(":") + " " + suffix;
 }
 
-
-chrome.tabs.onCreated.addListener(function(tab) {
- console.log("new tab created");
-});
-
-function search(website) {
-  var string = JSON.stringify(website);
-  console.log("before search");
-}
-
 //grab the whitelist with values
 function getWhiteList(callback) {
   chrome.storage.local.get(["whitelist"], function(result) {
@@ -71,40 +64,111 @@ function printWhitelist() {
   });
 }
 
-function addToWhiteList(website) {
+console.log(list);
 
-/*
-  var list = array.toString();
-  chrome.storage.local.set({"test":list}, function() {
-    console.log("set");
-  });
-
-  chrome.storage.local.get(["test"], function(result) {
-    console.log(Object.values(result));
-  })*/
-
-  /*
-  var array = ["google.com", "wikipedia.org"];
-  var list = array.toString();
-  console.log(list);
-  var array2 = list.split(",");
-  array2.forEach(function(e) {
-    console.log(e);
-  });
-  console.log("");
-
-  array.push("facebook.com");
-  list = array.toString();
-  array2 = list.split(",");
-  array2.forEach(function(e) {
-    console.log(e);
-  })*/
-
-  /*
-  chrome.storage.local.set({"whitelist":list}, function() {
-    console.log('ajlfksdjf');
-  });*/
+async function doSomething() {
+  await sleep(1000); //pause
+  console.log('print 1');
 }
+
+doSomething().then(function() {
+  console.log('print 2');
+})
+
+/* *********************************************************************************
+
+
+
+convert: getWhitelist, setWhitelist, resetWhitelist, addToWhitelist, printWhitelist
+
+
+
+************************************************************************************/
+
+/**********************************************************************************
+                                  WHITELIST FUNCTIONS
+***********************************************************************************/
+
+//get whitelist in form of string, not array yet
+function getWhitelist(callback) {
+  chrome.storage.local.get(['whitelist'], function(result) {
+    //turn the resultant string into a real string (sneaky sneaky)
+    var string = Object.values(result).toString();
+    var array = string.split(",");
+    if (array[0] != "") {
+      console.log("list: " + string);
+    }
+    //send the string-to-array'd value to the callback function AFTER it finishes
+    callback(array);
+  });
+}
+
+function resetWhitelist(callback) {
+  chrome.storage.local.remove(['whitelist'], function() {
+    console.log('removed');
+    var list = [];
+    callback(list);
+  });
+}
+
+/*using getWhitelist(callback)
+  how to call: arg will be the "returned" result of getWhitelist, pass into callback function "function(args)"
+    getWhitelist(function(arg) {
+      do something here if you want, optional instruction
+    })
+*/
+
+function addToWhitelist(website) {
+  getWhitelist(function(list) {
+    if (list[0] == "") {
+       console.log('adding to empty whitelist...');
+       chrome.storage.local.set({"whitelist": website}, function() {
+         printWhitelist();
+       });
+    }
+    else {
+      console.log('else');
+      //console.log(list);
+    }
+  })
+}
+
+//for debugging purposes
+function printWhitelist() {
+  getWhitelist(function(list) {
+    if (list.length == 1 && list[0] == "") {
+      console.log("whitelist is empty");
+    }
+    else {
+      console.log("printing whitelist...");
+      list.forEach(function(e) {
+        console.log(e);
+      })
+    }
+  })
+}
+
+/**********************************************************************************
+                                    TAB FUNCTIONS
+***********************************************************************************/
+
+chrome.tabs.onUpdated.addListener(function (tabId, info, tab) {
+  if (info.status === 'complete') {
+    var tabURL = new URL(tab.url);
+    //console.log("inside:" + tabURL);
+    var domain = tabURL.hostname;
+
+    if (domain == "newtab") {
+      resetWhitelist(function(list) {
+        if (list.length == 0) {
+          console.log('got an empty list');
+        }
+      });
+      //addToWhitelist("google");
+      }
+    }
+});
+
 
 //updates the website & time in the database
 function update(website, time) {
@@ -114,7 +178,7 @@ function update(website, time) {
   chrome.storage.local.remove([string], function() {
     console.log("removakdjfsldj");
   });*/
-  //after removing, add again bc screw efficiency
+  //after removing, add gain bc screw efficiency
   chrome.storage.local.set({[string]:time}, function() {
     console.log("updating by adding");
   });
@@ -133,43 +197,17 @@ chrome.tabs.onUpdated.addListener(function (tabId, info, tab) {
     var domain = tabURL.hostname;
 
     if (domain == "newtab") {
-      chrome.storage.local.set({"whitelist": "website"}, function() {
-        console.log("setting whitelist");
-      });
-
-      printWhitelist();
-
-/*chrome.storage.local.set({"website": "50"}, function() {
-  console.log("while it's setting");
-});
-
-
-chrome.storage.local.get(["website"], function(result) {
-  console.log(result);
-  console.log(Object.values(result))
-});
-
-chrome.storage.local.remove(["website"], function() {
-  console.log("removed");
-});
-
-chrome.storage.local.get(["website"], function(result) {
-  console.log(result);
-})*/
-
-
-
-}
-
+      domain = "url not set";
+    }
 
     if (domain != "newtab") //so it doesn't print out "newtab"
-{    console.log("active tab: " + domain);}
+      {
+        console.log("active tab: " + domain);
+      }
   }
 });
 
 chrome.tabs.onActivated.addListener(function(activeInfo){
-  console.log('activated');
-  console.log(timeStamp());
    chrome.tabs.query({
     active: true,
     lastFocusedWindow: true
@@ -180,14 +218,14 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
 
     //prints ONLY the domain name
     chrome.tabs.getSelected(null, function (tab) {
-      var url = new URL(tab.url)
-      var domain = url.hostname
+      var url = new URL(tab.url);
+      var domain = url.hostname;
 
       if (domain == "newtab") {
-        domain = "URL NOT SET";
+        domain = "URL NOT SET"; //blank tab has url as "newtab", so don't print and relocate domain
       }
-      console.log("active tab: " + domain);
-      // `domain` now has a value like 'example.com'
+      //print: "active tab: DOMAIN @ TIME"
+      console.log("active tab: " + domain + " @ " + timeStamp());
     });
   });
 })
@@ -198,3 +236,11 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
 chrome.tabs.onRemoved.addListener(function(tabid,removed){
   console.log("tab closed");
 })*/
+
+
+//listener for creating new tabs
+/*
+chrome.tabs.onCreated.addListener(function(tab) {
+ console.log("new tab created");
+});
+*/
