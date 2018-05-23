@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="bootstrap-theme.min.css" rel="stylesheet">
 <link rel="stylesheet" ref="text/css" href="style.css">
 
-
 <link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet">
 <head>
 
@@ -25,6 +24,15 @@
 <body>
   <div class="container">
     <center><h1>Settings</h1><br>
+
+      <input type="text" class="form-control" id="test-input" placeholder="" name="testing-add">
+      <button name="testing-add" id="add">add</button>
+      <button id="delete">clear</button>
+      <button id="show">show</button>
+<div id="table_container">
+
+</div>
+
     </center>
 <div class="panel panel-default">
   <div class="panel-heading"><b>Whitelist</b><br>
@@ -33,24 +41,9 @@
 
   <div class="panel-body">
 
-    <table class="table">
-      <tbody>
-        <tr>
-          <td>https://www.tritoned.ucsd.edu/</td>
-          <td><button>x</button></td>
-        </tr>
-    <tr>
-      <td>https://www.wikipedia.org/</td>
-      <td><button>x</button></td>
-    </tr>
-    <tr>
-      <td>https://google.scholar.com/</td>
-      <td><button>x</button></td>
-    </tr>
-  </tbody>
-    </table>
-
-
+<div id="table">
+<!--contents filled in by javascript access to storage-->
+</div>
 
 <br>
 Add another...

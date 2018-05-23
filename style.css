@@ -3,6 +3,10 @@ body {
   /*color:red; for debugging */
 }
 
+div.hidden {
+  display:none;
+}
+
 .progress {
   float:left;
   margin-bottom:0;

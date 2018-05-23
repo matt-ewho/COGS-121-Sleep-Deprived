@@ -1,28 +1,141 @@
-  //initialize firebase
-     var config = {
-      apiKey: "AIzaSyCo8rjvxcOKTgHNXhQqcmSsi6EmG2h1SgA",
-      authDomain: "cogs121-830e5.firebaseapp.com",
-      databaseURL: "https://cogs121-830e5.firebaseio.com",
-      projectId: "cogs121-830e5",
-      storageBucket: "cogs121-830e5.appspot.com",
-      messagingSenderId: "1030210360810"
-    };
- firebase.initializeApp(config);
 
- const whitelist = firebase.database();
- const timeInt = firebase.database();
+//ON PAGE LOAD
+  document.addEventListener("DOMContentLoaded", function(event) {
+    //const optionsURL = window.location.href;
+    console.log("ready!");
+    generateTable();
+  });
 
-/*
-//require is not working even after adding require.js
-const sqlite3 = require('sqlite3');
-const wdb = new sqlite3.Database('whitelist.db');
-*/
+/******************************************************
 
-document.addEventListener("DOMContentLoaded", function(event) {
-  const optionsURL = window.location.href;
-  console.log("ready!");
-  console.log(optionsURL);
-});
+                    FUNCTIONS
+
+******************************************************/
+
+//add to whitelist
+document.getElementById("add").onclick=function() {
+  chrome.storage.local.get(["whitelist"], function(result) {
+    const list = Object.values(result);
+    const listString = list.toString();
+    const newURL = $("#test-input").val();
+    //if whitelist is empty, add the new value
+    if (list == "") {
+      chrome.storage.local.set({"whitelist":newURL}, function() {
+        console.log('set ' + newURL);
+        reloadTable();
+      });
+      //if there is one entry already
+    } else if (listString.includes(",") == false) {
+      const array = [list, newURL];
+      const string = array.toString();
+      //remove entry, then re-input
+      chrome.storage.local.remove(["whitelist"], function() {
+        chrome.storage.local.set({"whitelist":string}, function() {
+          console.log('set ' + string);
+          reloadTable();
+        });
+      });
+      //if there is more than one entry
+    } else if (listString.includes(",") == true) {
+      //split up the string into array, then add new entry
+      const array = listString.split(",");
+      array.push(newURL);
+      //turn back into string and remove/re-input
+      const string = array.toString();
+      chrome.storage.local.remove(["whitelist"], function() {
+        chrome.storage.local.set({"whitelist":string}, function() {
+          console.log('set ' + string);
+          reloadTable();
+        });
+      });
+    }
+  });
+};
+
+/*show whitelist*/
+document.getElementById("show").onclick=function() {
+  chrome.storage.local.get(["whitelist"], function(result) {
+    const list = Object.values(result);
+    if (list == "") {
+      console.log('empty');
+    }
+    else {
+      console.log(result);
+    }
+  })
+}
+
+//create the table & call this function for the page ready
+function generateTable() {
+  chrome.storage.local.get(["whitelist"], function(result) {
+    console.log(result);
+    //get length of list, if 0, 1, or >1
+    const list = Object.values(result);
+    const listString = list.toString();
+    var length;
+
+    //list length = 0
+    if (list == "") {
+      console.log('length is 0');
+      var length = 0;
+    }
+    else if (listString.includes(",") == false) {
+      console.log('length is 1');
+      var length = 1;
+    }
+    else if (listString.includes(",") == true) {
+      const array = listString.split(",");
+      var length = array.length;
+    }
+
+    //create an array for the loop
+    const array = listString.split(",");
+
+    //create table & give it a class
+    var table = document.createElement("table");
+    table.classList.add("table");
+    var tableBody = document.createElement("tbody");
+
+    //create rows with i
+    for (var i=0; i<length; i++) {
+      var row = document.createElement("tr");
+
+      //create cell & cell text for WEBSITE
+      var cellWebsite = document.createElement("td");
+      var website = document.createTextNode(array[i]);
+
+      //append cell text to cell, then cell to row (like setting a "stage")
+      cellWebsite.appendChild(website);
+      row.appendChild(cellWebsite);
+
+      //create a cell & cell text for BUTTON
+      var cellDelete = document.createElement("td");
+      var button = document.createElement("BUTTON"); //has its own element
+      var text = document.createTextNode("x");
+      button.appendChild(text);
+      cellDelete.appendChild(button);
+      row.appendChild(cellDelete);
+
+      //create a row or whatever? row dividers don't show otherwise
+      tableBody.appendChild(row);
+    }
+
+    //append the table body to the table & then append the table to the table id
+    table.appendChild(tableBody);
+    document.getElementById("table").appendChild(table);
+  })
+}
+
+//function for re-loading table (used in adding to whitelist)
+function reloadTable() {
+  var table = document.getElementById("table");
+  while (table.firstChild) {
+    table.removeChild(table.firstChild);
+  }
+  console.log("done");
+  generateTable();
+}
+
 
 document.getElementById("testbutton").onclick=function() {
   $("#testbox").html("TEXT HAS CHANGED SUCCESSFULLY");
@@ -38,8 +151,11 @@ document.getElementById("alertbutton").onclick=function() {
 document.getElementById("deleteWhitelist").onclick=function() {
   if (confirm("Are you sure you wish to delete all of your whitelisted websites?")) {
     //deletes entire whitelist
-    whitelist.remove();
-    alert("Whitelisted websites have been deleted.");
+    chrome.storage.local.remove(["whitelist"], function() {
+      console.log('cleared');
+      reloadTable()
+    });
+
   }
 };
 

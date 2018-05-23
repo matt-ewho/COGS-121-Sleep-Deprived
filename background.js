@@ -47,33 +47,37 @@ function timeStamp() {
   return time.join(":") + " " + suffix;
 }
 
-//grab the whitelist with values
-function getWhiteList(callback) {
-  chrome.storage.local.get(["whitelist"], function(result) {
-    console.log(result);
-    return Object.values(result);
-  });
-  callback();
+
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
 }
 
-//for debugging: print whitelist values
-function printWhitelist() {
-  console.log("printing...");
-  var list = getWhiteList(function() {
-    console.log(list);
-  });
-}
+/*drafts*/
 
-console.log(list);
 
-async function doSomething() {
-  await sleep(1000); //pause
-  console.log('print 1');
-}
+chrome.tabs.onUpdated.addListener(function (tabId, info, tab) {
+  if (info.status === 'complete') {
+    var tabURL = new URL(tab.url);
+    //console.log("inside:" + tabURL);
+    var domain = tabURL.hostname;
 
-doSomething().then(function() {
-  console.log('print 2');
-})
+    if (domain == "newtab") {
+      console.log('skdlfj');
+      sleep(1000);
+      resetWhitelist(function(list) {
+        printWhitelist();
+      });
+      sleep(1000);
+      console.log('hi');
+      }
+    }
+});
+
 
 /* *********************************************************************************
 
@@ -152,22 +156,7 @@ function printWhitelist() {
                                     TAB FUNCTIONS
 ***********************************************************************************/
 
-chrome.tabs.onUpdated.addListener(function (tabId, info, tab) {
-  if (info.status === 'complete') {
-    var tabURL = new URL(tab.url);
-    //console.log("inside:" + tabURL);
-    var domain = tabURL.hostname;
 
-    if (domain == "newtab") {
-      resetWhitelist(function(list) {
-        if (list.length == 0) {
-          console.log('got an empty list');
-        }
-      });
-      //addToWhitelist("google");
-      }
-    }
-});
 
 
 //updates the website & time in the database
