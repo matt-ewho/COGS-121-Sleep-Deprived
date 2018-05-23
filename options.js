@@ -13,11 +13,24 @@
 ******************************************************/
 
 //add to whitelist
-document.getElementById("add").onclick=function() {
+document.getElementById("addWhitelist").onclick=function() {
   chrome.storage.local.get(["whitelist"], function(result) {
     const list = Object.values(result);
     const listString = list.toString();
-    const newURL = $("#test-input").val();
+    var newURL = $("#whitelist-add-url").val();
+
+    //edge cases: if URL is blank / URL doesn't have a domain extension
+    if (newURL == "") {
+      alert("Entry is blank!");
+      return;
+    }
+    if (newURL.includes(".org") == false && newURL.includes(".com") == false &&
+          newURL.includes(".net") == false && newURL.includes(".gov") == false &&
+          newURL.includes(".edu") == false) {
+      alert("URL entry must have one of the following domain extensions: .ORG, .COM, .NET, .GOV, .EDU");
+      return;
+    }
+
     //if whitelist is empty, add the new value
     if (list == "") {
       chrome.storage.local.set({"whitelist":newURL}, function() {
@@ -52,7 +65,26 @@ document.getElementById("add").onclick=function() {
   });
 };
 
-/*show whitelist*/
+//delete whitelist
+document.getElementById("deleteWhitelist").onclick=function() {
+  chrome.storage.local.get(["whitelist"], function(result) {
+    const list = Object.values(result);
+    if (list=="") {
+        alert("The whitelist is empty already!");
+    } else {
+      if (confirm("Are you sure you wish to delete all of your whitelisted websites?")) {
+        //deletes entire whitelist
+        chrome.storage.local.remove(["whitelist"], function() {
+          console.log('cleared');
+          reloadTable()
+        });
+      }
+    }
+  });
+};
+
+/*show whitelist in console
+
 document.getElementById("show").onclick=function() {
   chrome.storage.local.get(["whitelist"], function(result) {
     const list = Object.values(result);
@@ -63,7 +95,7 @@ document.getElementById("show").onclick=function() {
       console.log(result);
     }
   })
-}
+}*/
 
 //create the table & call this function for the page ready
 function generateTable() {
@@ -132,11 +164,11 @@ function reloadTable() {
   while (table.firstChild) {
     table.removeChild(table.firstChild);
   }
-  console.log("done");
+  console.log("reloaded table");
   generateTable();
 }
 
-
+/*
 document.getElementById("testbutton").onclick=function() {
   $("#testbox").html("TEXT HAS CHANGED SUCCESSFULLY");
   console.log("Text has changed successfully on front end.");
@@ -144,28 +176,10 @@ document.getElementById("testbutton").onclick=function() {
 
 document.getElementById("alertbutton").onclick=function() {
   alert('alert button works heck yes');
-};
+};*/
 
 /*RESET alerts*/
 
-document.getElementById("deleteWhitelist").onclick=function() {
-  if (confirm("Are you sure you wish to delete all of your whitelisted websites?")) {
-    //deletes entire whitelist
-    chrome.storage.local.remove(["whitelist"], function() {
-      console.log('cleared');
-      reloadTable()
-    });
-
-  }
-};
-
-//alert will tell what site was added
-document.getElementById("addWhitelist").onclick=function() {
-  const addedSite = document.getElementById("whitelist-add-url").value;
-  console.log(addedSite);
-  //add to database using push function
-  alert(addedSite+ " saved into database!");
-}
 
 /*SAVE CHANGES alerts*/
 document.getElementById("saveWhitelist").onclick=function() {

@@ -2,22 +2,18 @@ document.addEventListener("DOMContentLoaded", function(event) {
   console.log("pop-up loaded");
 });
 
-
-document.getElementById("testbutton").addEventListener("click", function() {
-  console.log('hi');
-});
-
-document.getElementById("add").addEventListener("click", function() {
-  chrome.storage.local.set({"test":"testing"}, function() {
-    console.log("complete");
-  });
-});
-
-document.getElementById("paste").addEventListener("click", function() {
-  chrome.storage.local.get(["test"], function(result) {
-    console.log(result);
+document.getElementById("show").onclick=function() {
+  chrome.storage.local.get(["whitelist"], function(result) {
+    const list = Object.values(result);
+    if (list == "") {
+      console.log('empty');
+    }
+    else {
+      console.log(result);
+    }
   })
-})
+}
+
 /*let changeColor = document.getElementById('changeColor');
 
 chrome.storage.sync.get('color', function(data) {

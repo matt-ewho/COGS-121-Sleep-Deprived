@@ -57,144 +57,18 @@ function sleep(milliseconds) {
   }
 }
 
-/*drafts*/
-
-
-chrome.tabs.onUpdated.addListener(function (tabId, info, tab) {
-  if (info.status === 'complete') {
-    var tabURL = new URL(tab.url);
-    //console.log("inside:" + tabURL);
-    var domain = tabURL.hostname;
-
-    if (domain == "newtab") {
-      console.log('skdlfj');
-      sleep(1000);
-      resetWhitelist(function(list) {
-        printWhitelist();
-      });
-      sleep(1000);
-      console.log('hi');
-      }
-    }
-});
-
-
-/* *********************************************************************************
-
-
-
-convert: getWhitelist, setWhitelist, resetWhitelist, addToWhitelist, printWhitelist
-
-
-
-************************************************************************************/
-
-/**********************************************************************************
-                                  WHITELIST FUNCTIONS
-***********************************************************************************/
-
-//get whitelist in form of string, not array yet
-function getWhitelist(callback) {
-  chrome.storage.local.get(['whitelist'], function(result) {
-    //turn the resultant string into a real string (sneaky sneaky)
-    var string = Object.values(result).toString();
-    var array = string.split(",");
-    if (array[0] != "") {
-      console.log("list: " + string);
-    }
-    //send the string-to-array'd value to the callback function AFTER it finishes
-    callback(array);
-  });
-}
-
-function resetWhitelist(callback) {
-  chrome.storage.local.remove(['whitelist'], function() {
-    console.log('removed');
-    var list = [];
-    callback(list);
-  });
-}
-
-/*using getWhitelist(callback)
-  how to call: arg will be the "returned" result of getWhitelist, pass into callback function "function(args)"
-    getWhitelist(function(arg) {
-      do something here if you want, optional instruction
-    })
-*/
-
-function addToWhitelist(website) {
-  getWhitelist(function(list) {
-    if (list[0] == "") {
-       console.log('adding to empty whitelist...');
-       chrome.storage.local.set({"whitelist": website}, function() {
-         printWhitelist();
-       });
-    }
-    else {
-      console.log('else');
-      //console.log(list);
-    }
-  })
-}
-
-//for debugging purposes
-function printWhitelist() {
-  getWhitelist(function(list) {
-    if (list.length == 1 && list[0] == "") {
-      console.log("whitelist is empty");
-    }
-    else {
-      console.log("printing whitelist...");
-      list.forEach(function(e) {
-        console.log(e);
-      })
-    }
-  })
-}
 
 /**********************************************************************************
                                     TAB FUNCTIONS
 ***********************************************************************************/
 
+/*global variables*/
 
-
-
-//updates the website & time in the database
-function update(website, time) {
-  //turn shit into string so the dumb function can use it
-  var string = JSON.stringify(website);
-  /*
-  chrome.storage.local.remove([string], function() {
-    console.log("removakdjfsldj");
-  });*/
-  //after removing, add gain bc screw efficiency
-  chrome.storage.local.set({[string]:time}, function() {
-    console.log("updating by adding");
-  });
-
-  chrome.storage.local.get([string], function(result) {
-    console.log(Object.values(result));
-    console.log("finished updating: " + Object.values(result));
-  });
-}
-
-//for updating blank tabs and same tabs to different urls
-chrome.tabs.onUpdated.addListener(function (tabId, info, tab) {
-  if (info.status === 'complete') {
-    var tabURL = new URL(tab.url);
-    //console.log("inside:" + tabURL);
-    var domain = tabURL.hostname;
-
-    if (domain == "newtab") {
-      domain = "url not set";
-    }
-
-    if (domain != "newtab") //so it doesn't print out "newtab"
-      {
-        console.log("active tab: " + domain);
-      }
-  }
-});
+var tab0; //with time0
+var tab1; //with time1
+var time0;
+var time1;
+var switchVar = true;
 
 chrome.tabs.onActivated.addListener(function(activeInfo){
    chrome.tabs.query({
@@ -210,11 +84,36 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
       var url = new URL(tab.url);
       var domain = url.hostname;
 
+      //wait until new tab is updated to print
       if (domain == "newtab") {
-        domain = "URL NOT SET"; //blank tab has url as "newtab", so don't print and relocate domain
+        chrome.tabs.onUpdated.addListener(function (tabId, info, tab) {
+          if (info.status === 'complete') {
+            var tabURL = new URL(tab.url);
+            var domain = tabURL.hostname;
+
+            if (domain == "newtab") {
+              console.log('active tab: url not set');
+            }
+            else if (domain != "newtab") {//so it doesn't print out "newtab"
+                console.log("active tab: " + domain + " @ " + timeStamp());
+            }
+          }
+        });
       }
+
       //print: "active tab: DOMAIN @ TIME"
-      console.log("active tab: " + domain + " @ " + timeStamp());
+      else {
+        console.log("active tab: " + domain + " @ " + timeStamp());
+        //console.log(switchVar);
+        if (switchVar == true) {
+          console.log('true');
+          switchVar = false;
+        }
+        else if (switchVar == false) {
+          console.log('false');
+          switchVar = true;
+        }
+      }
     });
   });
 })
