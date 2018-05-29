@@ -129,8 +129,14 @@ function generateTable() {
     var tableBody = document.createElement("tbody");
 
     //create rows with i
-    for (var i=0; i<length; i++) {
+
+    //i must be LET, because it changes the scope in javascript
+    //let allows the removesite function to work properly
+    for (let i=0; i<length; i++) {
+      console.log(i);
       var row = document.createElement("tr");
+      var site = array[i];
+      console.log(site);
 
       //create cell & cell text for WEBSITE
       var cellWebsite = document.createElement("td");
@@ -147,6 +153,18 @@ function generateTable() {
       button.appendChild(text);
       cellDelete.appendChild(button);
       row.appendChild(cellDelete);
+
+      //event listener for the X button, runs deleteSite function
+      //with the site text passed through it
+
+      button.addEventListener('click', function(e)
+      {
+        deleteSite(site);
+        console.log("deleted  : " +site);
+
+        reloadTable();
+      });
+
 
       //create a row or whatever? row dividers don't show otherwise
       tableBody.appendChild(row);
@@ -166,6 +184,54 @@ function reloadTable() {
   }
   console.log("reloaded table");
   generateTable();
+}
+
+//delete one item from the whitelist
+
+function deleteSite(site) {
+  //get the whitelist as a string
+  chrome.storage.local.get(["whitelist"], function(result) {
+  const list = Object.values(result);
+  let listString = list.toString();
+
+//im not 100% sure why this works but it does
+  const substring = site;
+
+  let str = site + ",";
+
+  //if its the last item (there are no commas)
+  if(listString.indexOf(',') == -1){
+    str = site;
+  }
+//checking if ' site, ' exists (if its at the end or not)
+//if it IS at the end, delete ' ,site '
+  else if(listString.indexOf(substring) !== -1){
+    str = ","+site;
+  }
+  else{
+    str = site + ",";
+  }
+
+  console.log(str);
+
+  //replace the site with blank - "remove"
+  const newString = listString.replace(str, "");
+
+//if theres still a comma ont the end of the string, remove the comma
+  if(listString.lastIndexOf(",") == listString.length-1)
+  {
+    console.log("there is still a comma at the end");
+    listString = listString.substring(0, listString.lastIndexOf(","));
+
+  }
+
+  //replace old whitelist with new string of whitelist
+  chrome.storage.local.remove(["whitelist"], function() {
+  chrome.storage.local.set({"whitelist":newString}, function() {
+      reloadTable();
+    });
+  });
+ });
 }
 
 /*
