@@ -1,0 +1,27 @@
+{
+  "name": "Should You Really Be Watching Netflix?",
+  "version": "1.0",
+  "description": "Extension testing...",
+  "permissions": ["tabs","activeTab","declarativeContent", "storage"],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "page_action": {
+    "default_popup": "popup_original.html",
+    "default_icon": {
+      "16": "images/netflix16.png",
+      "32": "images/netflix32.png",
+      "48": "images/netflix48.png",
+      "128": "images/netflix128.png"
+    }
+  },
+  "icons": {
+    "16": "images/netflix16.png",
+    "32": "images/netflix32.png",
+    "48": "images/netflix48.png",
+    "128": "images/netflix128.png"
+  },
+  "options_page": "options.html",
+  "manifest_version": 2
+}
