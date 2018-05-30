@@ -50,7 +50,8 @@ function timeStamp() {
 
 
 /**********************************************************************************
-                                    TAB FUNCTIONS
+                                    TIME FUNCTIONS
+                              calculateTime, updateTime
 ***********************************************************************************/
 
 /* global variables
@@ -58,23 +59,39 @@ function timeStamp() {
  * the difference in time from tab 0 to 1 or 1 to 0; boolean switchVar
  * will change depending on which tab is current (true:false for 0:1) */
 
-var tab0; //with time0
-var tab1; //with time1
-var time0;
-var time1;
+var tab0, tab1;
+var time0, time1;
 var switchVar = true;
+var currentTab, currentTime;
 
 /*calculates the difference in time (not accounting for AM/PM differences yet)*/
-function calculateTime(time0, time1) {
+function calculateTime(currentTime, previousTime) {
   //grab hours and minutes of each time
-  var hour0 = time0.substring(0,2);
-  var minute0 = time0.substring(3,5);
-  var hour1 = time1.substring(0,2);
-  var minute1 = time1.substring(3,5);
+  var hour0, hour1, minute0, minute1, second0, second1;
 
-  //grab seconds (more for debugging and seeing faster changes)
-  var second0 = time0.substring(6,8);
-  var second1 = time1.substring(6,8);
+  //length is 10 for a 1 digit hour for hour 0
+  if (currentTime.length == 10) {
+    var hour0 = currentTime.substring(0,1);
+    var hour0 = "0".concat(hour0);
+    var minute0 = currentTime.substring(2,4);
+    var second0 = currentTime.substring(5,7);
+  } else if (currentTime.length == 11) {
+    var hour0 = currentTime.substring(0,2);
+    var minute0 = currentTime.substring(3,5);
+    var second0 = currentTime.substring(6,8);
+  }
+
+  //lenght is 10 for a 1 digit hour for hour 1
+  if (previousTime.length == 10) {
+    var hour1 = previousTime.substring(0,1);
+    var hour1 = "0".concat(hour1);
+    var minute1 = previousTime.substring(2,4);
+    var second1 = previousTime.substring(5,7);
+  } else if (previousTime.length == 11) {
+    var hour1 = previousTime.substring(0,2);
+    var minute1 = previousTime.substring(3,5);
+    var second1 = previousTime.substring(6,8);
+  }
 
   var hourTotal, minuteTotal, secondTotal;
 
@@ -82,79 +99,232 @@ function calculateTime(time0, time1) {
   var hourTotal = Math.abs(+hour0 - +hour1);
   var minuteTotal = Math.abs(+minute0 - +minute1);
   var secondTotal = Math.abs(+second0 - +second1);
-  console.log(hourTotal + ":" + minuteTotal + ":" + secondTotal);
+
+  /* print out math for checking
+  console.log(hour0 + " - " + hour1 + " = " + hourTotal);
+  console.log(minute0 + " - " + minute1 + " = " + minuteTotal);
+  console.log(second0 + " - " + second1 + " = " + secondTotal);
+  */
+
+  //turn into double digit spaces (e.g. 1 second == 01 second)
+  if (hourTotal < 10) {
+    var hourTotal = "0".concat(hourTotal);
+  }
+  if (minuteTotal < 10) {
+    var minuteTotal = "0".concat(minuteTotal);
+  }
+  if (secondTotal < 10) {
+    var secondTotal = "0".concat(secondTotal);
+  }
+
+  //print and return elapsed time
+  //console.log("elapsed time: " + hourTotal + ":" + minuteTotal + ":" + secondTotal);
   return hourTotal + ":" + minuteTotal + ":" + secondTotal;
 }
 
 /*updates time by adding old time + new time*/
 function updateTime(oldTime, timeToAdd) {
+  console.log("old time: " + oldTime + ", elapsed time: " + timeToAdd);
+  //grab hours, minutes, and seconds
+  let hour0 = oldTime.substring(0,2);
+  let hour1 = timeToAdd.substring(0,2);
+  let minute0 = oldTime.substring(3,5);
+  let minute1 = timeToAdd.substring(3,5);
+  let second0 = oldTime.substring(6,8);
+  let second1 = timeToAdd.substring(6,8);
 
+  var hourTotal, minuteTotal, secondTotal;
+
+  //add hours, minutes, and seconds seprately
+  hourTotal = +hour0 + +hour1;
+  minuteTotal = +minute0 + +minute1;
+  secondTotal = +second0 + +second1;
+
+  //add "excess" seconds - anything over 60 will add a minute to minuteTotal
+  /* debugging the math
+  if (60%60 == 0) {
+    console.log("120%60 = 0");
+    console.log('set to 0');
+    console.log('adding ' + 60/60 + ' minutes');
+  }
+  if (121%60 != 0) {
+    console.log("121%60 != 0");
+    console.log('subtracting ' + 121%60 + " from 121");
+    console.log('adding ' + (121 - 121%60)/60 + " minutes");
+    console.log('set to ' + 121%60);
+  }
+  */
+
+  //first check if seconds is >= 60
+  if (secondTotal >= 60) {
+    //if seconds is a multiple of 60
+    if (secondTotal%60 == 0) {
+      var minuteTotal = minuteTotal + secondTotal/60;
+      var secondTotal = 0;
+      //if not, add the number of 60 multiples to minutes &
+      //subtract remainder of seconds/60 and set seconds to that
+    } else if (secondTotal%60 != 0) {
+      var difference = secondTotal - secondTotal%60;
+      var minuteTotal = minuteTotal + difference/60;
+      var secondTotal = secondTotal%60;
+    }
+  } else {
+    //console.log('seconds is less than 60');
+  }
+
+  //add "excess" minutes - anything over 60 will add an hour to the hourTotal
+  if (minuteTotal >= 60) {
+    //if seconds is a multiple of 60
+    if (minuteTotal%60 == 0) {
+      var hourTotal = hourTotal + minuteTotal/60;
+      var minuteTotal = 0;
+      //if not, add the number of 60 multiples to minutes &
+      //subtract remainder of seconds/60 and set seconds to that
+    } else if (minuteTotal%60 != 0) {
+      var difference = minuteTotal - minuteTotal%60;
+      var hourTotal = hourTotal + difference/60;
+      var minuteTotal = minuteTotal%60;
+    }
+  } else {
+    //console.log('minutes is less than 60');
+  }
+
+  //convert time to double digits again
+  if (hourTotal < 10) {
+    var hourTotal = "0".concat(hourTotal);
+  }
+  if (minuteTotal < 10) {
+    var minuteTotal = "0".concat(minuteTotal);
+  }
+  if (secondTotal < 10) {
+    var secondTotal = "0".concat(secondTotal);
+  }
+
+  return hourTotal + ":" + minuteTotal + ":" + secondTotal;
+  //end of function
 }
+
+
+/**********************************************************************************
+                                  PAGE/TAB FUNCTIONS
+                            checkPage, updateHistory, onActivated
+***********************************************************************************/
+
+/* keeps track of all the visited websites */
+ function updateHistory(urlToAdd) {
+   console.log('updating history');
+   chrome.storage.local.get(["history"], function(result) {
+     const list = Object.values(result);
+     const listString = list.toString();
+
+     //if history is empty, add first website
+     if (list == "") {
+       chrome.storage.local.set({"history": urlToAdd}, function() {
+          console.log('set ' + urlToAdd);
+       });
+     } else if (listString.includes(",") == false) {
+       const array = [list, urlToAdd];
+       const string = array.toString();
+
+       chrome.storage.local.remove(["history"], function() {
+         chrome.storage.local.set({"history":string}, function() {
+           console.log('set ' + string);
+         });
+       });
+     } else if (listString.includes(",") == true) {
+       const array = listString.split(",");
+       array.push(urlToAdd);
+       const string = array.toString();
+       chrome.storage.local.remove(["history"], function() {
+         chrome.storage.local.set({"history":string}, function() {
+           console.log('set ' + string);
+         });
+       });
+     }
+
+   });
+ }
 
 /* called whenever a tab is activated / decided (urL)
  * tabs will alternate between 0 and 1, decided by the boolean switchVar 3 */
-function checkPage(url, time) {
-  chrome.storage.local.get([url], function(result) {
+function checkPage(currentTab, currentTime) {
+  chrome.storage.local.get([currentTab], function(result) {
     //check which tab it's supposed to be on (either 0 or 1)
-    if (switchVar == true && url != "newtab") {
-      tab0 = url;
-      time0 = time;
-      console.log('setting tab 0 to ' + tab0 + " " + time0);
+    if (switchVar == true && currentTab != "newtab") {
+      tab0 = currentTab;
+      time0 = currentTime;
+      //console.log('setting tab 0 to ' + tab0 + " " + time0);
       switchVar = false;
     }
-    else if (switchVar == false && url != "newtab") {
-      tab1 = url;
-      time1 = time;
-      console.log('setting tab 1 to ' + tab1 + " " + time1);
+    else if (switchVar == false && currentTab != "newtab") {
+      tab1 = currentTab;
+      time1 = currentTime;
+      //console.log('setting tab 1 to ' + tab1 + " " + time1);
       switchVar = true;
     }
 
-    //once you have more than 1 tab, calculate the time spent on the previous tab
+    //once you have more than 1 tab, assign the previous tab
     if (time0 != undefined && time1 != undefined) { //check for undefined to wait until "newtab" is established/overwritten
-      var timeInput;
-      //if the urls are the same domain
-      if (tab0 == tab1) {
-        console.log('same');
-        timeInput = calculateTime(time0, time1);
+      if (switchVar == true) {
+        var previousTab = tab0;
+        var previousTime = time0;
+        //console.log("previous: " + previousTab);
+      } else if (switchVar == false) {
+        var previousTab = tab1;
+        var previousTime = time1;
+        //console.log('previous: ' + previousTab);
+      }
 
-      }
-      else {
-        console.log('not');
-      }
+      //figure out the time spent on the previous tab
+      const timeInput = calculateTime(currentTime, previousTime);
 
       //after figuring out time, put into database
       //this allows us to use a string as a key for the object we insert
-      var key = url;
+      var key = previousTab;
       var obj = {};
       obj[key] = timeInput;
 
       //if the url isn't in the database yet (grabbed at beginning of function)
       if (Object.values(result).length == 0) {
-        console.log("adding new url: " + url);
+        console.log("adding new url: " + previousTab);
+        updateHistory(currentTab);
 
           chrome.storage.local.set(obj, function() {
-            chrome.storage.local.get([url], function(result) {
+            chrome.storage.local.get([previousTab], function(result) {
               console.log(result);
             });
           });
-      //if the url is already in the database
-      } else {
-        console.log("updating url: " + url);
-        console.log(Object.values(result));
-        //update the time
-        updateTime(Object.values(result).toString(),timeInput);
+      //if the url is already in the database && currently the same url
+      } else if (previousTab == currentTab) {
+          //console.log('same');
+          let newTime = updateTime(Object.values(result).toString(),timeInput);
+          obj[key] = newTime;
 
-        //remove and set in database again
-        chrome.storage.local.remove([url], function () {
-          chrome.storage.local.set(obj, function() {
-            chrome.storage.local.get([url], function(result) {
-              console.log(result);
+          //remove and set in database again
+          chrome.storage.local.remove([previousTab], function() {
+            chrome.storage.local.set(obj, function() {
+              chrome.storage.local.get([previousTab], function(result) {
+                console.log(result);
+              });
             });
           });
-        });
-      }
+      } else if (previousTab != currentTab) {
+          //console.log("urls are not the same");
+          chrome.storage.local.get([previousTab], function(result) {
+            let newTime = updateTime(Object.values(result).toString(), timeInput);
+            obj[key] = newTime;
 
-    }
+            chrome.storage.local.remove([previousTab], function() {
+              chrome.storage.local.set(obj, function() {
+                chrome.storage.local.get([previousTab], function(result) {
+                  console.log(result);
+                });
+              });
+            });
+          });
+        }
+      } //end of if
+
   });
 }
 
@@ -182,7 +352,6 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
 
             if (domain == "newtab") {
               console.log('active tab: url not set');
-              checkPage(domain);
             }
             else if (domain != "newtab") {//so it doesn't print out "newtab"
               var time = timeStamp();
@@ -195,10 +364,12 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
 
       //otherwise when already established, print: "active tab: DOMAIN @ TIME"
       else {
-        var time = timeStamp();
-        console.log("active tab: " + domain + " @ " + time);
-        checkPage(domain,time);
+        if (tab.status === 'complete') {
+          var time = timeStamp();
+          console.log("active tab: " + domain + " @ " + time);
+          checkPage(domain,time);
         }
+      }
     });
   });
 })

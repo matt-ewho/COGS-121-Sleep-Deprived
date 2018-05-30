@@ -2,7 +2,7 @@
 //ON PAGE LOAD
   document.addEventListener("DOMContentLoaded", function(event) {
     //const optionsURL = window.location.href;
-    console.log("ready!");
+    console.log("options loaded");
     generateTable();
   });
 
@@ -106,15 +106,17 @@ function generateTable() {
     const listString = list.toString();
     var length;
 
-    //list length = 0
+    //list length = 0 if it's blank
     if (list == "") {
       console.log('length is 0');
       var length = 0;
     }
+    //list length = 1 if it doesn't have a comma
     else if (listString.includes(",") == false) {
       console.log('length is 1');
       var length = 1;
     }
+    //list length > 1 if it has a comma
     else if (listString.includes(",") == true) {
       const array = listString.split(",");
       var length = array.length;
@@ -156,7 +158,6 @@ function generateTable() {
 
       //event listener for the X button, runs deleteSite function
       //with the site text passed through it
-
       button.addEventListener('click', function(e)
       {
         deleteSite(site);
@@ -164,7 +165,6 @@ function generateTable() {
 
         reloadTable();
       });
-
 
       //create a row or whatever? row dividers don't show otherwise
       tableBody.appendChild(row);
@@ -183,6 +183,7 @@ function reloadTable() {
     table.removeChild(table.firstChild);
   }
   console.log("reloaded table");
+  //re-generate table
   generateTable();
 }
 
@@ -217,7 +218,7 @@ function deleteSite(site) {
   //replace the site with blank - "remove"
   const newString = listString.replace(str, "");
 
-//if theres still a comma ont the end of the string, remove the comma
+//if theres still a comma on the end of the string, remove the comma
   if(listString.lastIndexOf(",") == listString.length-1)
   {
     console.log("there is still a comma at the end");
