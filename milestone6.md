@@ -2,6 +2,9 @@
 
 ## UI Improvements
 
+<img src="https://raw.githubusercontent.com/matt-ewho/COGS-121-Sleep-Deprived/master/images/NETFLIXMAN.PNG">
+First and foremost, we created an icon for our extention and replaced the default icon with our own.
+
 Our UI has changed for both our popup and options page.
 
 <img src="https://raw.githubusercontent.com/matt-ewho/COGS-121-Sleep-Deprived/master/images/M6.PNG">
