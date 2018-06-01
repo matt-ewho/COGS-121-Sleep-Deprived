@@ -14,4 +14,16 @@ We also added a "reset database" button to the popup, so one can reset the track
 
 We also clarified usability for the Settings page - no longer do we have a "reset" button, simple a "save" and "delete all." This makes our whitelist settings easier to navigate and manipulate. A user can delete an item from the whitelist, or remove the entire whitelist.
 
+<img src="https://raw.githubusercontent.com/matt-ewho/COGS-121-Sleep-Deprived/master/images/34101995_10212917114462614_1076676819966492672_n.png">
+
+We added an alert that shows the user that the whitelist was added. This is for confirmation and ease of use.
+
 ## Visualization
+
+<img src="https://raw.githubusercontent.com/matt-ewho/COGS-121-Sleep-Deprived/master/images/34076044_10212917112262559_7882908925547249664_n.png">
+
+Above is our progress bar visualization that shows the user's proportion of "work" to "play" sites. It will list the user's total time on any site, their time on "non-work" websites, and their time on "work" websites, which the user can choose using the whitelist. 
+
+<img src="https://raw.githubusercontent.com/matt-ewho/COGS-121-Sleep-Deprived/master/images/M6.PNG">
+
+This can be compared to a user that has not used any websites, for example, if a user idles on a new tab page. 
