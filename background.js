@@ -390,6 +390,14 @@ function checkPage(currentTab, currentTime) {
   });
 }
 
+/* sets current tab in database to grab from pop-up */
+function updateCurrentTab(url) {
+  chrome.storage.local.remove(["currentTab"], function() {
+    chrome.storage.local.set({"currentTab":url});
+      console.log('current tab set in database: ' + url);
+  });
+}
+
 /* listener for when the tab gets activated / new tab is updated */
 chrome.tabs.onActivated.addListener(function(activeInfo){
    chrome.tabs.query({
@@ -421,6 +429,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
                 checkPage(domain,time);
                 console.log('UPDATING in NEWTAB');
                 updateHistory(domain);
+                updateCurrentTab(domain);
             }
           }
         });
@@ -434,6 +443,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
           checkPage(domain,time);
           console.log('UPDATING in ELSE');
           updateHistory(domain);
+          updateCurrentTab(domain);
         }
       }
     });

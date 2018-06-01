@@ -1,7 +1,15 @@
 /* on-page load function for pop-up */
 document.addEventListener("DOMContentLoaded", function(event) {
   console.log("pop-up loaded");
+
+  //add descriptions to icon hovers
+  $("#add-icon").attr('title', 'add current website to whitelist');
+  $("#settings-icon").attr('title', 'settings');
+
+  //generate the progress bar (will work asynchronously)
   generateProgressBar();
+
+  //grab the work time and play time and check if they're undefined
   chrome.storage.local.get(["workTime"], function(workTime) {
     chrome.storage.local.get(["playTime"], function(playTime) {
       if (Object.values(workTime) == "" && Object.values(playTime) == "") {
@@ -11,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             sort();
           });
         });
+        //if they're defined, update the times for the progress bar
       } else {
         console.log('else');
         sort();
@@ -38,7 +47,49 @@ document.getElementById("resetDatabase").onclick=function() {
   });
 }
 
+document.getElementById("add-icon").onclick=function() {
+  chrome.storage.local.get(["currentTab"], function(url) {
+    console.log(url);
+    chrome.storage.local.get(["whitelist"], function(result) {
+      const list = Object.values(result);
+      const listString = list.toString();
+      const urlString = Object.values(url);
+      console.log(urlString);
 
+      //if whitelist is empty, add the new value
+      if (list == "") {
+        chrome.storage.local.set({"whitelist":urlString}, function() {
+          console.log('set ' + urlString);
+          alert("Added " + urlString + " to whitelist!")
+        });
+        //if there is one entry already
+      } else if (listString.includes(",") == false) {
+        const array = [list, urlString];
+        const string = array.toString();
+        //remove entry, then re-input
+        chrome.storage.local.remove(["whitelist"], function() {
+          chrome.storage.local.set({"whitelist":string}, function() {
+            console.log('set ' + string);
+            alert("Added " + urlString + " to whitelist!")
+          });
+        });
+        //if there is more than one entry
+      } else if (listString.includes(",") == true) {
+        //split up the string into array, then add new entry
+        const array = listString.split(",");
+        array.push(urlString);
+        //turn back into string and remove/re-input
+        const string = array.toString();
+        chrome.storage.local.remove(["whitelist"], function() {
+          chrome.storage.local.set({"whitelist":string}, function() {
+            console.log('set ' + string);
+            alert("Added " + urlString + " to whitelist!")
+          });
+        });
+      }
+    });
+  });
+}
 
 /**********************************************************************************
                                   PROGRESS BAR FUNCTIONS
@@ -101,7 +152,6 @@ function generateProgressBar() {
         $("#progressBar").html(ratio + " " + text);
     });
   });
-  //progressBar.style.width = vara;
 }
 
 /* looks through every item in history to see if the url is in the whitelist,
