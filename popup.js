@@ -94,7 +94,7 @@ document.getElementById("add-icon").onclick=function() {
                                     C3 Timechart
 ***********************************************************************************/
 var chart = c3.generate({
-bindto: document.getElementById('chart2'),
+bindto: document.getElementById("chart2"),
 data: {
 columns: [
   ['data1', 30, 200, 100, 400, 150, 250],
