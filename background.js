@@ -1,6 +1,8 @@
 /* prints when extension has loaded successfully */
 chrome.runtime.onInstalled.addListener(function() {
-   console.log("extension loaded")
+   console.log("extension loaded");
+   sort();
+
    chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
      chrome.declarativeContent.onPageChanged.addRules([{
        conditions: [new chrome.declarativeContent.PageStateMatcher({
@@ -124,7 +126,7 @@ function calculateTime(currentTime, previousTime) {
 
 /*updates time by adding old time + new time*/
 function updateTime(oldTime, timeToAdd) {
-  console.log("old time: " + oldTime + ", elapsed time: " + timeToAdd);
+  //console.log("old time: " + oldTime + ", elapsed time: " + timeToAdd);
   //grab hours, minutes, and seconds
   let hour0 = oldTime.substring(0,2);
   let hour1 = timeToAdd.substring(0,2);
@@ -207,41 +209,101 @@ function updateTime(oldTime, timeToAdd) {
 
 /**********************************************************************************
                                   PAGE/TAB FUNCTIONS
-                            checkPage, updateHistory, onActivated
+                      sort, checkPage, updateHistory, onActivated
 ***********************************************************************************/
 
-/* keeps track of all the visited websites */
+/* variables for amount of time spent doing "work" and amount of time spent
+ * NOT doing work ("play") */
+var workTime, playTime;
+var test;
+
+/* looks through every item in history to see if the url is in the whitelist,
+ * then adds up the amount of time spent on whitelisted websites vs. amount
+ * of time spent on non-whitelisted websites
+ * whitelisted time = workTime
+ * non-whitelisted time = playTime */
+function sort() {
+  chrome.storage.local.get(["whitelist"], function(whitelist) {
+    chrome.storage.local.get(["history"], function(history) {
+      if (workTime == undefined && playTime == undefined) {
+        console.log('initializing workTime & playTime');
+        var workTime = "00:00:00";
+        var playTime = "00:00:00";
+      }
+
+      console.log('whitelist: ' + Object.values(whitelist));
+      console.log('history: ' + Object.values(history));
+
+      //turn object data into strings
+      const whitelistString = Object.values(whitelist).toString();
+      const historyString = Object.values(history).toString();
+
+      //turn strings into arrays
+      const whitelistArray = whitelistString.split(",");
+      const historyArray = historyString.split(",");
+
+      //for each item in history, check if it's in the whitelist
+      historyArray.forEach(function(url) {
+        if (whitelistArray.includes(url) == true) {
+          //console.log('whitelist has it!');
+          chrome.storage.local.get([url], function(data) {
+            //console.log("url: " + url + ", data: " + Object.values(data));
+            let time = Object.values(data).toString();
+            var newTime = updateTime(workTime, time);
+            workTime = newTime;
+            //console.log('work time: ' + workTime);
+          });
+        } else if (whitelistArray.includes(url) == false){
+          //console.log('whitelist does not have it');
+          chrome.storage.local.get([url], function(data) {
+            //console.log("url: " + url + ", data: " + Object.values(data));
+            let time = Object.values(data).toString();
+            var newTime = updateTime(playTime, time);
+            playTime = newTime;
+            //console.log("play time: " + playTime);
+          });
+        }
+      });
+    });
+  });
+}
+
+/* keeps track of all the visited websites
+ * called in checkPage() function in onActivated */
  function updateHistory(urlToAdd) {
    console.log('updating history');
-   chrome.storage.local.get(["history"], function(result) {
-     const list = Object.values(result);
-     const listString = list.toString();
+   chrome.storage.local.get(["history"], function(history) {
+     chrome.storage.local.get([urlToAdd], function(result) {
+       const list = Object.values(history);
+       const listString = list.toString();
 
-     //if history is empty, add first website
-     if (list == "") {
-       chrome.storage.local.set({"history": urlToAdd}, function() {
-          console.log('set ' + urlToAdd);
-       });
-     } else if (listString.includes(",") == false) {
-       const array = [list, urlToAdd];
-       const string = array.toString();
-
-       chrome.storage.local.remove(["history"], function() {
-         chrome.storage.local.set({"history":string}, function() {
-           console.log('set ' + string);
+       //if history is empty, add first website
+       if (list == "") {
+         chrome.storage.local.set({"history": urlToAdd}, function() {
+            console.log('set ' + urlToAdd);
          });
-       });
-     } else if (listString.includes(",") == true) {
-       const array = listString.split(",");
-       array.push(urlToAdd);
-       const string = array.toString();
-       chrome.storage.local.remove(["history"], function() {
-         chrome.storage.local.set({"history":string}, function() {
-           console.log('set ' + string);
-         });
-       });
-     }
+      //if history has one item and current tab is NOT in the database
+       } else if (listString.includes(",") == false && listString.includes(urlToAdd) == false) {
+         const array = [list, urlToAdd];
+         const string = array.toString();
 
+         chrome.storage.local.remove(["history"], function() {
+           chrome.storage.local.set({"history":string}, function() {
+             console.log('set ' + string);
+           });
+         });
+      //if history has more than one item and current tab is NOT in the database
+       } else if (listString.includes(",") == true && listString.includes(urlToAdd) == false) {
+         const array = listString.split(",");
+         array.push(urlToAdd);
+         const string = array.toString();
+         chrome.storage.local.remove(["history"], function() {
+           chrome.storage.local.set({"history":string}, function() {
+             console.log('set ' + string);
+           });
+         });
+       }
+     });
    });
  }
 
@@ -287,7 +349,7 @@ function checkPage(currentTab, currentTime) {
       //if the url isn't in the database yet (grabbed at beginning of function)
       if (Object.values(result).length == 0) {
         console.log("adding new url: " + previousTab);
-        updateHistory(currentTab);
+        //updateHistory(currentTab);
 
           chrome.storage.local.set(obj, function() {
             chrome.storage.local.get([previousTab], function(result) {
@@ -357,6 +419,8 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
               var time = timeStamp();
                 console.log("active tab: " + domain + " @ " + time);
                 checkPage(domain,time);
+                console.log('UPDATING in NEWTAB');
+                updateHistory(domain);
             }
           }
         });
@@ -368,6 +432,8 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
           var time = timeStamp();
           console.log("active tab: " + domain + " @ " + time);
           checkPage(domain,time);
+          console.log('UPDATING in ELSE');
+          updateHistory(domain);
         }
       }
     });

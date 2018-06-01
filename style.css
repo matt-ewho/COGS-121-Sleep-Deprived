@@ -10,13 +10,13 @@ div.hidden {
 .progress {
   float:left;
   margin-bottom:0;
-  width:85%;
+  width:82%;
 }
 
 #settings-icon {
   position:absolute;
   top:57px;
-  margin-left:85%;
+  margin-left:89%;
   opacity:0.6;
   transition: opacity .1s ease-in;
 -moz-transition: opacity .1s ease-in;
@@ -25,6 +25,21 @@ div.hidden {
 }
 
 #settings-icon:hover {
+  opacity:.9;
+}
+
+#add-icon {
+  position:absolute;
+  top:57px;
+  margin-left:80%;
+  opacity:0.6;
+  transition: opacity .1s ease-in;
+-moz-transition: opacity .1s ease-in;
+-webkit-transition: opacity .1s ease-in;
+-o-transition: opacity .1s ease-in;
+}
+
+#add-icon:hover {
   opacity:.9;
 }
 

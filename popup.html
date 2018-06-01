@@ -1,17 +1,45 @@
 <!DOCTYPE html>
- <html>
-   <head>
-     <style>
-       button {
-         height: 30px;
-         width: 30px;
-         outline: none;
-       }
-     </style>
-   </head>
-   <body>
-     <button id="changeColor"></button>
-<a href="chrome-extension://amoiplfbijeigbipbgepolgihpkdfana/options.html" target="_blank">link me</a>
-     <script src="popup.js"></script>
-   </body>
- </html>
+
+<html>
+  <head>
+    <link href="bootstrap.css" rel="stylesheet">
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <link href="bootstrap-theme.css" rel="stylesheet">
+    <link href="bootstrap-theme.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+      <style>
+      body {
+        width:245px;
+        height:85px;
+      }
+    </style>
+
+  </head>
+
+    <body>
+      <div id="settings-icon">
+        <a href="chrome-extension://amoiplfbijeigbipbgepolgihpkdfana/options.html" target="_blank"><img width=21px height=21px src="/images/settings.png"></a>
+      </div>
+
+      <center><b>Should I Really Be Watching Netflix Right Now?</b><br><br>
+    <div class="container">
+      <div class="progress">
+        <div id="progressBar" class="progress-bar" role="progressbar" aria-valuenow="50"
+        aria-valuemin="0" aria-novaluemax="100">
+
+        </div>
+      </div>
+    </div>
+
+<button id="resetDatabase">reset database</button>
+<div id="add-icon">
+  <img width=21px height=21px src="/images/add.png">
+</div>
+    </center>
+
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
