@@ -5,6 +5,7 @@
     console.log("options loaded");
     generateTable();
   });
+  
 
 /******************************************************
 
