@@ -212,11 +212,6 @@ function updateTime(oldTime, timeToAdd) {
                       sort, checkPage, updateHistory, onActivated
 ***********************************************************************************/
 
-/* variables for amount of time spent doing "work" and amount of time spent
- * NOT doing work ("play") */
-var workTime, playTime;
-var test;
-
 /* looks through every item in history to see if the url is in the whitelist,
  * then adds up the amount of time spent on whitelisted websites vs. amount
  * of time spent on non-whitelisted websites
@@ -225,12 +220,6 @@ var test;
 function sort() {
   chrome.storage.local.get(["whitelist"], function(whitelist) {
     chrome.storage.local.get(["history"], function(history) {
-      if (workTime == undefined && playTime == undefined) {
-        console.log('initializing workTime & playTime');
-        var workTime = "00:00:00";
-        var playTime = "00:00:00";
-      }
-
       console.log('whitelist: ' + Object.values(whitelist));
       console.log('history: ' + Object.values(history));
 
@@ -242,28 +231,70 @@ function sort() {
       const whitelistArray = whitelistString.split(",");
       const historyArray = historyString.split(",");
 
-      //for each item in history, check if it's in the whitelist
-      historyArray.forEach(function(url) {
-        if (whitelistArray.includes(url) == true) {
-          //console.log('whitelist has it!');
-          chrome.storage.local.get([url], function(data) {
-            //console.log("url: " + url + ", data: " + Object.values(data));
-            let time = Object.values(data).toString();
-            var newTime = updateTime(workTime, time);
-            workTime = newTime;
-            //console.log('work time: ' + workTime);
+      //reset workTime / playTime
+      chrome.storage.local.remove(["workTime"], function() {
+        chrome.storage.local.remove(["playTime"], function() {
+          chrome.storage.local.set({"workTime":"00:00:00"}, function() {
+            chrome.storage.local.set({"playTime":"00:00:00"}, function() {
+              //for each url, check for whitelist/non-whitelist
+              historyArray.forEach(function(url) {
+                chrome.storage.local.get([url], function(data) {
+                  chrome.storage.local.get(["workTime"], function(workTime) {
+                    chrome.storage.local.get(["playTime"], function(playTime) {
+                      //if the url is in the whitelist, add to "work time"
+                      if (whitelistArray.includes(url) == true) {
+                        let timeToAdd = Object.values(data).toString();
+                        let newTime = updateTime(Object.values(workTime).toString(), timeToAdd);
+                        chrome.storage.local.remove(["workTime"], function() {
+                          chrome.storage.local.set({"workTime":newTime}, function() {
+                            console.log("set new worktime " + url);
+                          });
+                        });
+                        //if the url is not in the whitelist, add to "play time"
+                      } else if (whitelistArray.includes(url) == false) {
+                        let timeToAdd = Object.values(data).toString();
+                        let newTime = updateTime(Object.values(playTime).toString(), timeToAdd);
+                        chrome.storage.local.remove(["playTime"], function() {
+                          chrome.storage.local.set({"playTime":newTime}, function() {
+                            console.log('set new playtime ' + url);
+                          });
+                        });
+                      }
+                    });
+                  });
+                });
+              });
+            });
           });
-        } else if (whitelistArray.includes(url) == false){
-          //console.log('whitelist does not have it');
-          chrome.storage.local.get([url], function(data) {
-            //console.log("url: " + url + ", data: " + Object.values(data));
-            let time = Object.values(data).toString();
-            var newTime = updateTime(playTime, time);
-            playTime = newTime;
-            //console.log("play time: " + playTime);
-          });
-        }
+        });
       });
+
+/*      historyArray.forEach(function(url) {
+        chrome.storage.local.get([url], function(data) {
+          chrome.storage.local.get(["workTime"], function(workTime) {
+            chrome.storage.local.get(["playTime"], function(playTime) {
+              if (whitelistArray.includes(url) == true) {
+                let timeToAdd = Object.values(data).toString();
+                let newTime = updateTime(Object.values(workTime).toString(), timeToAdd);
+                chrome.storage.local.remove(["workTime"], function() {
+                  chrome.storage.local.set({"workTime":newTime}, function() {
+                    console.log("set new worktime " + url);
+                  });
+                });
+              } else if (whitelistArray.includes(url) == false) {
+                let timeToAdd = Object.values(data).toString();
+                let newTime = updateTime(Object.values(playTime).toString(), timeToAdd);
+                chrome.storage.local.remove(["playTime"], function() {
+                  chrome.storage.local.set({"playTime":newTime}, function() {
+                    console.log('set new playtime ' + url);
+                  });
+                });
+              }
+            });
+          });
+        });
+      });*/
+
     });
   });
 }
@@ -429,6 +460,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
                 checkPage(domain,time);
                 console.log('UPDATING in NEWTAB');
                 updateHistory(domain);
+                sort();
                 updateCurrentTab(domain);
             }
           }
@@ -443,6 +475,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
           checkPage(domain,time);
           console.log('UPDATING in ELSE');
           updateHistory(domain);
+          sort();
           updateCurrentTab(domain);
         }
       }

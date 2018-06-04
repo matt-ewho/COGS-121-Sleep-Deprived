@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
   $("#add-icon").attr('title', 'add current website to whitelist');
   $("#settings-icon").attr('title', 'settings');
 
+  showHistory();
+
   //generate the progress bar (will work asynchronously)
   generateProgressBar();
 
@@ -16,13 +18,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
         chrome.storage.local.set({"workTime":"00:00:00"}, function() {
           chrome.storage.local.set({"playTime":"00:00:00"}, function() {
             console.log('initialized workTime / playTime');
-            sort();
+            //sort();
           });
         });
         //if they're defined, update the times for the progress bar
       } else {
         console.log('else');
-        sort();
+        //sort();
         console.log(Object.values(workTime));
         console.log(Object.values(playTime));
       }
@@ -30,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   });
 });
 
-/* debugging function for resetting database */
+/* debugging function for resetting database 
 document.getElementById("resetDatabase").onclick=function() {
   chrome.storage.local.get(["whitelist"], function(result) {
     console.log(result);
@@ -45,7 +47,7 @@ document.getElementById("resetDatabase").onclick=function() {
       })
     });
   });
-}
+}*/
 
 document.getElementById("add-icon").onclick=function() {
   chrome.storage.local.get(["currentTab"], function(url) {
@@ -292,4 +294,44 @@ function calculateRatio(timeToDivide, totalTime) {
   let ratio = (+secondTotal0/+secondTotal1)*100;
 
   return ratio.toString().substring(0,5);
+}
+
+function showHistory() {
+  chrome.storage.local.get(["workTime"], function(workTime) {
+    chrome.storage.local.get(["playTime"], function(playTime) {
+      //grab times and find total time spent
+      let work = Object.values(workTime).toString();
+      let play = Object.values(playTime).toString();
+      let total = addTime(work,play);
+
+      //display times
+      $("#historyDiv").append("work time: " + work);
+      let br = document.createElement("br");
+      $("#historyDiv").append(br);
+      $("#historyDiv").append("non-work time: " + play);
+      br = document.createElement("br");
+      $("#historyDiv").append(br);
+      $("#historyDiv").append("total time spent: " + total);
+
+      //display history
+      chrome.storage.local.get(["history"], function(history) {
+        br = document.createElement('br');
+        $("#historyDiv").append(br);
+        var historyText = Object.values(history).toString();
+        var historyArray = historyText.split(",");
+
+//        $("#historyDiv").append();
+        historyArray.forEach(function(url) {
+          chrome.storage.local.get([url], function(data) {
+            br = document.createElement('br');
+            var time = Object.values(data);
+            $("#historyDiv").append(br);
+            $("#historyDiv").append(url + " " + time);
+          })
+        });
+        console.log('array: ' + historyArray);
+        //$("#historyDiv").append(historyText);
+      })
+    });
+  });
 }
