@@ -17,8 +17,6 @@
 
 ## Source Code
 
-<b>app.js</b><br>
-
 <b>background.js</b><br>
 
 <b>manifest.json</b><br>
