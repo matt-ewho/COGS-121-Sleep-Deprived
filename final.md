@@ -31,8 +31,6 @@
 
 <b>package-lock.json</b><br>
 
-<b>app.js</b><br>
-
 <b>popup.html</b><br>
 
 <b>popup.js</b><br>
