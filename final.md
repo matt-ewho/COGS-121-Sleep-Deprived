@@ -34,7 +34,10 @@ The primary whitelist manipulating functions (the only other way is through back
 <b>package-lock.json</b><br>
 
 <b>popup.html</b><br>
+Contains small icons to navigate our extention: options button, reset database, and progress bar. Defines stylesheets to use for the popup. Data is manipulated using popup.js.
 
 <b>popup.js</b><br>
+Contains functions to generate and accurately reflect data on the progress bar, using data from localstorage that has been collected by background.js. Also contains javascript functions for the buttons on the popup: options button, reset database. Popup.js is where the total time spent on websites is "sorted," or, where the website is added to "Play" if not on the whitelist, and added to "Work" if it is in the whitelist. This file also contains functions to calculate total "play" or "work" time, and reflect this on the progres bar. 
 
 <b>style.css</b><br>
+Our style sheet for our extention. Contains style definitions for settings icons, add icon (in our popup), and whitelist style.
