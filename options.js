@@ -6,7 +6,6 @@
 var seconds = [];
   document.addEventListener("DOMContentLoaded", function(event) {
     //const optionsURL = window.location.href;
-    playTimeToSec();
     console.log("options loaded");
     generateTable();
     generateChart();
@@ -22,6 +21,8 @@ var seconds = [];
 
 function generateChart()
 {
+  //get data of work and play time from the chrome storage. then convert
+  //into a raw number of seconds to display on the bar chart
   chrome.storage.local.get(["workTime"], function(workTime) {
     //grab times and find total time spent
     let work = Object.values(workTime).toString();
@@ -42,6 +43,7 @@ function generateChart()
 
         console.log(seconds);
 
+      //generate the chart with the specified data
     var chart = c3.generate({
         data: {
             columns: [
@@ -57,7 +59,7 @@ function generateChart()
         axis: {
           y: {
               max: 5000,
-              min: 50,
+              min: 5,
               // Range includes padding, set 0 if no padding needed
               // padding: {top:0, bottom:0}
           }
