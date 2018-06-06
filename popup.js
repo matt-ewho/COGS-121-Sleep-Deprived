@@ -49,6 +49,10 @@ document.getElementById("resetDatabase").onclick=function() {
   });
 }*/
 
+document.getElementById("settings-icon").onclick=function(){
+  window.open("chrome-extension://mlliolejajmccfiaehomalpdmfibbdcf/options.html");
+}
+
 document.getElementById("add-icon").onclick=function() {
   chrome.storage.local.get(["currentTab"], function(url) {
     console.log(url);
