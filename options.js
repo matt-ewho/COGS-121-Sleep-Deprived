@@ -58,7 +58,7 @@ function generateChart()
         },
         axis: {
           y: {
-              max: 5000,
+              max: 2000,
               min: 5,
               // Range includes padding, set 0 if no padding needed
               // padding: {top:0, bottom:0}
