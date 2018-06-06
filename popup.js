@@ -50,7 +50,7 @@ document.getElementById("resetDatabase").onclick=function() {
 }*/
 
 document.getElementById("add-icon").onclick=function() {
-  chrome.storage.local.get(["currentTab"], function(url) {
+  chrome.storage.local.get(["currentTab"], function() {
     console.log(url);
     chrome.storage.local.get(["whitelist"], function(result) {
       const list = Object.values(result);
@@ -174,6 +174,7 @@ function sort() {
       //turn strings into arrays
       const whitelistArray = whitelistString.split(",");
       const historyArray = historyString.split(",");
+
 
       historyArray.forEach(function(url) {
         chrome.storage.local.get([url], function(data) {
