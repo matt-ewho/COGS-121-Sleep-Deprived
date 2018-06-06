@@ -321,15 +321,16 @@ function showHistory() {
         var historyText = Object.values(history).toString();
         var historyArray = historyText.split(",");
 
+
 //        $("#historyDiv").append();
-        historyArray.forEach(function(url) {
+      /*  historyArray.forEach(function(url) {
           chrome.storage.local.get([url], function(data) {
             br = document.createElement('br');
             var time = Object.values(data);
             $("#historyDiv").append(br);
             $("#historyDiv").append(url + " " + time);
           })
-        });
+        }); */
         console.log('array: ' + historyArray);
         //$("#historyDiv").append(historyText);
       })
