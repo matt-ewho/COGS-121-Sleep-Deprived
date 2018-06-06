@@ -4,7 +4,7 @@
 
 <b>Matthew Ho</b><br>
 • Data Visualization - time chart<br>
-• UI Designer - "details" in settings<br>
+• UI Designer - "details" in settings
 
 <br><b>Christal Vo</b><br>
 • Main UI Designer - aesthetics, buttons, alerts, popup<br>
