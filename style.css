@@ -1,3 +1,7 @@
+/* filename: style.css 
+ * description: contains css styling for the popup.html and options.html; includes things like
+ * fade in and fade out for buttons as well as button position. Main css file used was bootstrap. */
+
 body {
   font-family: 'Abel';
   /*color:red; for debugging */

@@ -1,3 +1,7 @@
+<!-- filename: popup.html
+    description: main point of user interaction; contains the skeleton of the progress
+    bar and buttons (add to whitelist, settings link) -->
+
 <!DOCTYPE html>
 
 <html>
@@ -11,21 +15,12 @@
       <!-- Load c3.css -->
     <link href="c3.css" rel="stylesheet">
 
-      <!--loading scripts-->
-    <script src="jquery-3.3.1.min.js"></script>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
-    <!-- Load d3.js and c3.js -->
-    <script src="d3.min.js" charset="utf-8"></script>
-    <script src="c3.min.js"></script>
-    <script src="popup.js"></script>
-
       <style>
       body {
         width:245px;
         height:85px;
       }
     </style>
-
   </head>
 
     <body>
@@ -43,23 +38,25 @@
       </div>
     </div>
 
-<<<<<<< HEAD
-<!-- <button id="resetDatabase" display="none">reset database</button> -->
-=======
 <button id="resetDatabase">reset database</button>
->>>>>>> 7e3094eaff77c72eed38052854dfc9878f2b16a5
 <div id="add-icon">
   <img width=21px height=21px src="/images/add.png">
 </div>
 
-<<<<<<< HEAD
 <div id="historyDiv">
 
 </div>
-=======
->>>>>>> 7e3094eaff77c72eed38052854dfc9878f2b16a5
+
     </center>
 
+          <!--loading scripts-->
+        <script src="jquery-3.3.1.min.js"></script>
+        <script src="popup.js"></script>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+
+        <!-- Load d3.js and c3.js -->
+        <script src="d3.min.js" charset="utf-8"></script>
+        <script src="c3.min.js"></script>
 
   </body>
 </html>
