@@ -8,7 +8,7 @@
 ## Team Information: Sleep Deprived
 
 <b>Matthew Ho</b><br>
-• Data Visualization - time chart<br>
+• Data Visualization - bar chart<br>
 • UI Designer - "details" in settings
 
 <br><b>Christal Vo</b><br>
@@ -17,7 +17,7 @@
 • Data Collection - gather and manipulate time data, grabbing time from website and manipulating for progress bar<br>
 • Data Visualization - progress bar<br>
 <br><b>Yoshika Hilke</b><br>
-• UI Designer - images, buttons<br>
+• UI Designer - images, buttons, visualization debugging<br>
 • Backend - Database (initial), whitelist<br>
 • Researcher/Summarizer (milestones, APIs)<br>
 
