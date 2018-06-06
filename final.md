@@ -2,7 +2,7 @@
 
 ## Demo Video Links
 <b> Original https://vimeo.com/273750274</b><br>
-<br> (Backup 1) https://www.dailymotion.com/video/x6l82mz <br>
+<br> (Backup 1, bad quality) https://www.dailymotion.com/video/x6l82mz <br>
 (Backup 2, low resolution) https://youtu.be/d6NaQAjojV8
 
 ## Team Information: Sleep Deprived
