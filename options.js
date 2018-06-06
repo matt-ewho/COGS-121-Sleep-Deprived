@@ -2,44 +2,176 @@
  * description: javascript file for options.html; contains code for charts to be shown
  * as well as functions to add, remove, and clear the whitelist. */
 //ON PAGE LOAD
+
+var seconds = [];
   document.addEventListener("DOMContentLoaded", function(event) {
     //const optionsURL = window.location.href;
+    playTimeToSec();
     console.log("options loaded");
     generateTable();
+    generateChart();
   });
+
+  showHistory();
+
   /******************************************************
 
-                      Charts
+                       Bar Charts w/ worktime & playtime
 
   ******************************************************/
-/*
-chrome.storage.local.get(["whitelist"], function(whitelist) {
-console.log('whitelist: ' + Object.values(whitelist))
 
-  const whitelistString = Object.values(whitelist).toString();
-    const whitelistArray = whitelistString.split(",");
+function generateChart()
+{
+  chrome.storage.local.get(["workTime"], function(workTime) {
+    //grab times and find total time spent
+    let work = Object.values(workTime).toString();
+    // your input string
+    var a = work.split(':'); // split it at the colons
 
-    console.log(Object.values(whitelistArray))
+    // minutes are worth 60 seconds. Hours are worth 60 minutes.
+    var workSec = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
 
-  });
-*/
-  var chart = c3.generate({
-      data: {
-          columns: [
-              ['data1', 30, 200, 100, 400, 150, 250],
-              ['data2', 50, 20, 10, 40, 15, 25]
-          ],
-          names: {
-              data1: 'Name 1',
-              data2: 'Name 2'
+    chrome.storage.local.get(["playTime"], function(playTime) {
+      //grab times and find total time spent
+      let play = Object.values(playTime).toString();
+      // your input string
+      var b = play.split(':'); // split it at the colons
+
+      // minutes are worth 60 seconds. Hours are worth 60 minutes.
+      var playSec = (+b[0]) * 60 * 60 + (+b[1]) * 60 + (+b[2]);
+
+        console.log(seconds);
+
+    var chart = c3.generate({
+        data: {
+            columns: [
+            ['data1', workSec],
+            ['data2', playSec]
+            ],
+            names: {
+                data1: 'Work Time',
+                data2: 'Non Work Time'
+                },
+            type: 'bar'
+        },
+        axis: {
+          y: {
+              max: 5000,
+              min: 50,
+              // Range includes padding, set 0 if no padding needed
+              // padding: {top:0, bottom:0}
           }
-      }
-  });
-/*
-  setTimeout(function () {
-      chart.data.names({data1: 'New name for data1', data2: 'New name for data2'});
-  }, 1000);
-*/
+      },
+        bar: {
+            width: {
+                ratio: 0.5 // this makes bar width 50% of length between ticks
+            }
+            // or
+            //width: 100 // this makes bar width 100px
+        }
+    });
+
+});
+});
+}
+
+
+  function workTime(){
+  chrome.storage.local.get(["workTime"], function(workTime) {
+    let work = Object.values(workTime).toString();
+    console.log("work: "+work)
+  })
+};
+
+  function playTime(){
+    chrome.storage.local.get(["playTime"], function(playTime) {
+      //grab times and find total time spent
+      let play = Object.values(playTime).toString();
+      console.log("play: "+play);
+      return play;
+    })
+  };
+
+  function playTimeToSec(){
+    chrome.storage.local.get(["playTime"], function(playTime) {
+      //grab times and find total time spent
+      let play = Object.values(playTime).toString();
+      // your input string
+      var a = play.split(':'); // split it at the colons
+
+      // minutes are worth 60 seconds. Hours are worth 60 minutes.
+      var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+
+        console.log(seconds);
+
+  })
+};
+
+      function workTimeToSec(){
+        chrome.storage.local.get(["workTime"], function(workTime) {
+          //grab times and find total time spent
+          let work = Object.values(workTime).toString();
+          // your input string
+          var a = work.split(':'); // split it at the colons
+
+          // minutes are worth 60 seconds. Hours are worth 60 minutes.
+          var newSec = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+
+          seconds.push(newSec);
+
+            console.log(seconds);
+
+
+          })
+          return seconds;
+      };
+
+
+  /******************************************************
+
+                  tab for individual site and time
+
+  ******************************************************/
+  function showHistory() {
+    chrome.storage.local.get(["workTime"], function(workTime) {
+      chrome.storage.local.get(["playTime"], function(playTime) {
+        //grab times and find total time spent
+        let work = Object.values(workTime).toString();
+        let play = Object.values(playTime).toString();
+        let total = addTime(work,play);
+
+        //display times
+        $("#historyDiv").append("work time: " + work);
+        let br = document.createElement("br");
+        $("#historyDiv").append(br);
+        $("#historyDiv").append("non-work time: " + play);
+        br = document.createElement("br");
+        $("#historyDiv").append(br);
+        $("#historyDiv").append("total time spent: " + total);
+
+        //display history
+        chrome.storage.local.get(["history"], function(history) {
+          br = document.createElement('br');
+          $("#historyDiv").append(br);
+          var historyText = Object.values(history).toString();
+          var historyArray = historyText.split(",");
+
+  //        $("#historyDiv").append();
+          historyArray.forEach(function(url) {
+            chrome.storage.local.get([url], function(data) {
+              br = document.createElement('br');
+              var time = Object.values(data);
+              $("#historyDiv").append(br);
+              $("#historyDiv").append(url + " " + time);
+            })
+          });
+          console.log('array: ' + historyArray);
+          ("#historyDiv").append(historyText);
+        })
+      });
+    });
+  };
+
 /******************************************************
 
                     FUNCTIONS
@@ -169,10 +301,8 @@ function generateTable() {
     //i must be LET, because it changes the scope in javascript
     //let allows the removesite function to work properly
     for (let i=0; i<length; i++) {
-      console.log(i);
       var row = document.createElement("tr");
       var site = array[i];
-      console.log(site);
 
       //create cell & cell text for WEBSITE
       var cellWebsite = document.createElement("td");
