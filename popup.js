@@ -1,3 +1,9 @@
+/* filename: popup.js
+ * description: javascript code for the popup.html page; contains code that loads
+ * the progress bar by grabbing data from the storage database and updates it; the
+ * progress bar ratio is calculated here using generateProgressBar(), as well as the
+ * colors that are used for indicating status (next to the numeric %). */
+
 /* on-page load function for pop-up */
 document.addEventListener("DOMContentLoaded", function(event) {
   console.log("pop-up loaded");
@@ -32,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   });
 });
 
-/* debugging function for resetting database
+/* debugging function for resetting database */
 document.getElementById("resetDatabase").onclick=function() {
   chrome.storage.local.get(["whitelist"], function(result) {
     console.log(result);
@@ -43,12 +49,13 @@ document.getElementById("resetDatabase").onclick=function() {
         console.log('restoring whitelist');
         chrome.storage.local.get(["whitelist"], function(list) {
           console.log(list);
-        })
-      })
+        });
+      });
     });
   });
-}*/
+}
 
+/* adds current website to whitelist by grabbing "currentWebsite" object from database */
 document.getElementById("add-icon").onclick=function() {
   chrome.storage.local.get(["currentTab"], function(url) {
     console.log(url);
@@ -95,7 +102,7 @@ document.getElementById("add-icon").onclick=function() {
 
 /**********************************************************************************
                                   PROGRESS BAR FUNCTIONS
-                      generateProgressBar, sort, addTime (same as updateTime)
+                    generateProgressBar, addTime (same as updateTime)
 ***********************************************************************************/
 
 function generateProgressBar() {
@@ -105,12 +112,13 @@ function generateProgressBar() {
         //grab times and find total time spent
         let work = Object.values(workTime).toString();
         let play = Object.values(playTime).toString();
+        console.log(work + " " + play + " alsdkfjlsdkfj");
         let total = addTime(work,play);
 
         //calculate ratios
         let playRatio = calculateRatio(play,total);
         let workRatio = calculateRatio(work,total);
-        console.log(playRatio + " " + workRatio);
+        console.log("flag " + playRatio + " " + workRatio);
 
         let ratio;
         let text;
@@ -126,6 +134,7 @@ function generateProgressBar() {
 
         //inject ratio into html to show on progress bar
         progressBar.style.width = ratio;
+        console.log("hi hi hi " + ratio);
 
         //color the bar based on progress
         let color;
@@ -152,54 +161,6 @@ function generateProgressBar() {
 
         //display the percentage on the bar
         $("#progressBar").html(ratio + " " + text);
-    });
-  });
-}
-
-/* looks through every item in history to see if the url is in the whitelist,
- * then adds up the amount of time spent on whitelisted websites vs. amount
- * of time spent on non-whitelisted websites
- * whitelisted time = workTime
- * non-whitelisted time = playTime */
-function sort() {
-  chrome.storage.local.get(["whitelist"], function(whitelist) {
-    chrome.storage.local.get(["history"], function(history) {
-      console.log('whitelist: ' + Object.values(whitelist));
-      console.log('history: ' + Object.values(history));
-
-      //turn object data into strings
-      const whitelistString = Object.values(whitelist).toString();
-      const historyString = Object.values(history).toString();
-
-      //turn strings into arrays
-      const whitelistArray = whitelistString.split(",");
-      const historyArray = historyString.split(",");
-
-      historyArray.forEach(function(url) {
-        chrome.storage.local.get([url], function(data) {
-          chrome.storage.local.get(["workTime"], function(workTime) {
-            chrome.storage.local.get(["playTime"], function(playTime) {
-              if (whitelistArray.includes(url) == true) {
-                let timeToAdd = Object.values(data).toString();
-                let newTime = addTime(Object.values(workTime).toString(), timeToAdd);
-                chrome.storage.local.remove(["workTime"], function() {
-                  chrome.storage.local.set({"workTime":newTime}, function() {
-                    console.log("set new worktime " + url);
-                  });
-                });
-              } else if (whitelistArray.includes(url) == false) {
-                let timeToAdd = Object.values(data).toString();
-                let newTime = addTime(Object.values(playTime).toString(), timeToAdd);
-                chrome.storage.local.remove(["playTime"], function() {
-                  chrome.storage.local.set({"playTime":newTime}, function() {
-                    console.log('set new playtime ' + url);
-                  });
-                });
-              }
-            });
-          });
-        });
-      });
     });
   });
 }
@@ -296,6 +257,8 @@ function calculateRatio(timeToDivide, totalTime) {
   return ratio.toString().substring(0,5);
 }
 
+/* for debugging - shows list of visited websites (generated and saved from background.js)
+ * along with amount of time spent on website */
 function showHistory() {
   chrome.storage.local.get(["workTime"], function(workTime) {
     chrome.storage.local.get(["playTime"], function(playTime) {

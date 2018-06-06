@@ -1,3 +1,9 @@
+<!-- filename: options.html
+    description: details and settings page for the extension; includes the data in
+    visualization form as well as the complete whitelist; whitelist is fully functional
+    and ready for interaction to add, delete, and clear. Former settings such as "work interval"
+    and "notifications" have been removed due to lack of time for implementation.
+
 <!DOCTYPE html>
 <!-- HOMEPAGE -->
 <html>
@@ -73,43 +79,12 @@ Add another...
 
 <center>
   <button id="deleteWhitelist">Delete All</button>
-  <button id="saveWhitelist">Save</button></center>
 <!-- END PANEL -->
 </div>
 </div>
 
-<!-- INTERVAL PANEL -->
 
-<div class="panel panel-default">
-  <div class="panel-heading"><b>Work Interval</b><br>
-  <small>The work interval is the amount of time that your website usage is tracked for your progress bar.</small></div>
-  <div class="panel-body">
-
-    Current work interval is set to
-
-    <!-- <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref"> -->
-    <select class="selectpicker" id="intervalSelect">
-        <option>1 hour (default)</option>
-        <option>2 hours</option>
-        <option>3 hours</option>
-        <option>6 hours</option>
-        <option>12 hours</option>
-        <option>24 hours</option>
-    </select>
-
-    <br><br>
-    <b><font color="black">Warning:</font></b> Changing your current tracking interval will reset your progress bar to 50/50.
-
-    <br><br>
-
-    <center>
-      <button>Reset</button>
-      <button id="saveInterval">Save</button>
-  </div>
-</div>
-
-
-<!-- NOTIFICATIONS PANEL -->
+<!-- NOTIFICATIONS PANEL - saved for later
 
 <div class="panel panel-default">
   <div class="panel-heading"><b>Notifications</b><br>
@@ -138,16 +113,7 @@ Add another...
 </div>
 </div>
 
-
-<!-- SAVE PANEL -->
-
-<div class="panel panel-default">
-  <div class="panel-body">
-  <center><button>Reset</button>
-    <button>Default</button>
-  <button id="saveAll">Save Changes</button></div>
-</div>
-
+-->
 
 </body>
 
