@@ -33,7 +33,7 @@ Contains a listener to obtain current tab's URL, obtains initial timestamp (poin
 HTML webpage for our options page. Includes references to our bootstrap css files, buttons and options for the user, titles, and divisions. The data on this page is manipulated using options.js.
 
 <b>options.js</b><br>
-The primary whitelist manipulating functions (the only other way is through background.js, in which a user can add to their whitelist by adding the site they are currently visiting. options.js contains functions to add to, remove from, or clear the entire whitelist. It also creates a user-friendly table with "X" buttons so a user can easily see and manipulate the items in their whitelist. 
+The primary whitelist manipulating functions (the only other way is through background.js, in which a user can add to their whitelist by adding the site they are currently visiting. options.js contains functions to add to, remove from, or clear the entire whitelist. It also creates a user-friendly table with "X" buttons so a user can easily see and manipulate the items in their whitelist. This is also the file where we make calculations for our bar chart, and display the bar chart. 
 
 <b>popup.html</b><br>
 Contains small icons to navigate our extention: options button, reset database, and progress bar. Defines stylesheets to use for the popup. Data is manipulated using popup.js.
